@@ -5,6 +5,14 @@ const connectDataBase = async (url: string) => {
 
   mongoose.set("debug", true);
 
+  mongoose.set("toJSON", {
+    virtuals: true,
+    transform(doc, ret) {
+      delete ret._id;
+      delete ret.__v;
+    },
+  });
+
   try {
     await mongoose.connect(url);
   } catch (error) {
