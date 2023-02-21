@@ -11,10 +11,6 @@ const userSchema = new Schema({
     required: true,
     minLength: 8,
   },
-  email: {
-    type: String,
-    required: true,
-  },
 });
 
 const User = model("User", userSchema, "users");
