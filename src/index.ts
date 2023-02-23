@@ -13,7 +13,7 @@ debug(`${mongoDdUrl!}`);
 
 try {
   await connectDataBase(mongoDdUrl!);
-  debug(chalk.green("Connected to data base"));
+  debug(chalk.green(`Connected to data base`));
 
   await startServer(+port);
   debug(chalk.green(`Server listening on port ${port}`));
