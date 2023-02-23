@@ -28,6 +28,13 @@ module.exports = {
         "@typescript-eslint/no-unsafe-call": "off",
       },
     },
+    {
+      files: ["src/**/**/*.test.ts"],
+      rules: {
+        "no-empty-function": "off",
+        "@typescript-eslint/no-empty-function": "off",
+      },
+    },
   ],
   parserOptions: {
     ecmaVersion: "latest",

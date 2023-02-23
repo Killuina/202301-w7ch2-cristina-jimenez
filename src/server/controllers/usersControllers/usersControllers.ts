@@ -1,8 +1,8 @@
-import "../../loadEnvironment.js";
+import "../../../loadEnvironment.js";
 import { type NextFunction, type Request, type Response } from "express";
-import { CustomError } from "../../CustomError/CustomError.js";
-import User from "../../database/models/User.js";
-import { type UserCredentials } from "../../types";
+import { CustomError } from "../../../CustomError/CustomError.js";
+import User from "../../../database/models/User.js";
+import { type UserCredentials } from "../../../types";
 import jwt from "jsonwebtoken";
 import bcryptjs from "bcryptjs";
 
@@ -50,7 +50,7 @@ export const createUser = async (
   next: NextFunction
 ) => {
   try {
-    const { password, username } = req.body;
+    const { password, username }: UserCredentials = req.body;
 
     const saltLength = 10;
     const hashedPassword = await bcryptjs.hash(password, saltLength);
@@ -60,7 +60,7 @@ export const createUser = async (
     res.status(201).json({ user });
   } catch (error) {
     const customError = new CustomError(
-      error.message,
+      (error as Error).message,
       500,
       "Error while creating the user"
     );

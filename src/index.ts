@@ -9,8 +9,6 @@ export const debug = createDebug("robots:");
 const port = process.env.PORT ?? 4000;
 const mongoDdUrl = process.env.MONGODB_CONNECTION_URL;
 
-debug(`${mongoDdUrl!}`);
-
 try {
   await connectDataBase(mongoDdUrl!);
   debug(chalk.green(`Connected to data base`));
