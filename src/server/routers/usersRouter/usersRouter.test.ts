@@ -5,6 +5,8 @@ import User from "../../../database/models/User";
 import request from "supertest";
 import { app } from "../..";
 import jwt from "jsonwebtoken";
+import { type NextFunction, type Request, type Response } from "express";
+import { type UserCredentials } from "../../../types";
 
 let server: MongoMemoryServer;
 
@@ -19,12 +21,12 @@ afterAll(async () => {
 });
 
 describe("Given the POST /users/login endpoint", () => {
-  const mockUser = {
+  const userData = {
     username: "Diana",
     password: "quehagoquehago",
   };
   beforeAll(async () => {
-    await User.create(mockUser);
+    await User.create(userData);
   });
 
   describe("When it receives a request with a user with username 'Diana' and password 'quehagoquehago'", () => {
@@ -36,7 +38,7 @@ describe("Given the POST /users/login endpoint", () => {
 
       const response = await request(app)
         .post(path)
-        .send(mockUser)
+        .send(userData)
         .expect(expectedStatus);
 
       expect(response.body).toHaveProperty("token", expectedToken);
@@ -45,21 +47,55 @@ describe("Given the POST /users/login endpoint", () => {
 });
 
 describe("Given the POST /users/register endpoint", () => {
-  describe("when it receives a request with a user with username 'Manolo' and password 'queesunafuncionpura'", () => {
+  describe("when it receives a request with a user with username 'Manolo', password 'queesunafuncionpura' and a file", () => {
     test("Then it should respond with status 201 and the same user", async () => {
       const expectedStatus = 201;
-      const mockUser = {
+      const userData = {
         username: "Manolo",
         password: "queesunafuncionpura",
       };
-      User.create = jest.fn().mockResolvedValue(mockUser);
+      User.create = jest.fn().mockResolvedValue(userData);
 
       const response = await request(app)
         .post("/users/register")
-        .send(mockUser)
+        .send(userData)
         .expect(expectedStatus);
 
-      expect(response.body).toHaveProperty("user", mockUser);
+      expect(response.body).toHaveProperty(
+        "message",
+        `User '${userData.username}' created!`
+      );
+    });
+  });
+  describe("when it receives a request with a user with username 'Manolo', password 'queesunafuncionpura' and a file 'oaihdf.js'", () => {
+    test("Then it should respond with status 201 and the same user", async () => {
+      const expectedStatus = 201;
+      const userData = {
+        username: "Manolo",
+        password: "queesunafuncionpura",
+      };
+      const req = { body: userData } as Request<
+        Record<string, unknown>,
+        Record<string, unknown>,
+        UserCredentials
+      >;
+      const res: Partial<Response> = {
+        status: jest.fn().mockReturnThis(),
+        json: jest.fn().mockResolvedValue(userData),
+      };
+      const next = (() => {}) as NextFunction;
+
+      const response = await request(app)
+        .post("/users/register")
+        .field("username", userData.password)
+        .field("password", userData.username)
+        .attach("avatar", "src/testMedia/1677238314361favicon.ico.jpg")
+        .expect(expectedStatus);
+
+      expect(response.body).toHaveProperty(
+        "message",
+        `User '${userData.username}' created!`
+      );
     });
   });
 });

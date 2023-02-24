@@ -5,7 +5,7 @@ import {
   getRobotById,
   getRobots,
 } from "../../controllers/robotsControllers/robotsControllers.js";
-import auth from "../../middlewares/auth.js";
+import auth from "../../middlewares/auth/auth.js";
 
 export const robotsRouter = Router();
 

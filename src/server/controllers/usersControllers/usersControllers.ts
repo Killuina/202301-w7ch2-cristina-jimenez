@@ -50,14 +50,18 @@ export const createUser = async (
   next: NextFunction
 ) => {
   try {
-    const { password, username }: UserCredentials = req.body;
+    const { password, username } = req.body;
 
     const saltLength = 10;
     const hashedPassword = await bcryptjs.hash(password, saltLength);
 
-    const user = await User.create({ password: hashedPassword, username });
+    const user = await User.create({
+      password: hashedPassword,
+      username,
+      avatar: req.file?.originalname,
+    });
 
-    res.status(201).json({ user });
+    res.status(201).json({ message: `User '${user.username}' created!` });
   } catch (error) {
     const customError = new CustomError(
       (error as Error).message,

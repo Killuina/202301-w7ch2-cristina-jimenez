@@ -12,6 +12,7 @@ export interface RobotStructure {
 }
 
 export interface UserCredentials {
+  avatar: string;
   username: string;
   password: string;
 }

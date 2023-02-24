@@ -11,10 +11,7 @@ describe("Given the createUser controller", () => {
   describe("When it receives a request with username: 'hola' and a password: '12345678", () => {
     test("Then it should call the status method with 201", async () => {
       const req = {
-        body: {
-          username: "hola",
-          password: "12345678",
-        },
+        body: user,
       } as Request<
         Record<string, unknown>,
         Record<string, unknown>,
@@ -35,12 +32,7 @@ describe("Given the createUser controller", () => {
     });
 
     test("then it should call its json method with object with property user containing the given user", async () => {
-      const req = {
-        body: {
-          username: "hola",
-          password: "12345678",
-        },
-      } as Request<
+      const req = { body: user } as Request<
         Record<string, unknown>,
         Record<string, unknown>,
         UserCredentials
@@ -54,7 +46,9 @@ describe("Given the createUser controller", () => {
 
       await createUser(req, res as Response, next);
 
-      expect(res.json).toBeCalledWith({ user });
+      expect(res.json).toBeCalledWith({
+        message: `User '${user.username}' created!`,
+      });
     });
   });
 });
